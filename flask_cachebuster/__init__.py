@@ -15,7 +15,7 @@ class CacheBuster:
         self.extensions = self.config.get('extensions') if self.config else []
         self.hash_size = self.config.get('hash_size') if self.config else HASH_SIZE
         if self.app is not None:
-            self.register_cache_buster(app, config)
+            self.init_app(app, config)
 
     def __is_file_to_be_busted(self, filepath):
         """
@@ -49,7 +49,7 @@ class CacheBuster:
                 rooted_filename = os.path.join(dirpath, filename)
                 if not self.__is_file_to_be_busted(rooted_filename):
                     continue
-                app.logger.debug('Computing hashes for {}'.format(rooted_filename))
+                # app.logger.debug('Computing hashes for {}'.format(rooted_filename))
                 with open(rooted_filename, 'rb') as f:
                     version = hashlib.md5(
                         f.read()
@@ -73,6 +73,3 @@ class CacheBuster:
             """
             if endpoint == 'static':
                 values['q'] = bust_filename(values['filename'])
-
-        # Replace the default static file view with our debusting view.
-        original_static_view = app.view_functions['static']
